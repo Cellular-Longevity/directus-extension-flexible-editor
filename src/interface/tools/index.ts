@@ -22,6 +22,7 @@ import orderedList from "./ordered-list";
 import blockquote from "./blockquote";
 import table from "./table";
 import fullscreen from "./fullscreen";
+import image from "./image";
 import type { AnyExtension } from "@tiptap/core";
 import type { Tool, ToolSelection, InterfaceOption } from "../types";
 
@@ -46,6 +47,7 @@ const tools: Tool[] = [
     link.remove,
     link.auto,
     relationMark,
+    image,
     hardBreak,
     horizontalRule,
     textAlign,
