@@ -472,6 +472,11 @@
     .flexible-editor :deep(.ProseMirror .ProseMirror-gapcursor:last-child:after) {
         bottom: 0;
     }
+
+    .flexible-editor :deep(.image) {
+        max-width: 100%;
+        height: auto;
+    }    
 </style>
 
 
