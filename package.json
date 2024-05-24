@@ -106,6 +106,7 @@
         "@tiptap/extension-table-row": "^2.2.4",
         "@tiptap/extension-text": "^2.2.4",
         "@tiptap/extension-text-align": "^2.2.4",
+        "@tiptap/extension-image": "^2.2.4",
         "tiptap-render-view": "^1.0.2"
     }
 }

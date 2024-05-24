@@ -22,6 +22,7 @@ import { TableHeader } from "@tiptap/extension-table-header";
 import { TableRow } from "@tiptap/extension-table-row";
 import { TableCell } from "@tiptap/extension-table-cell";
 import TextAlign from "@tiptap/extension-text-align";
+import Image from "@tiptap/extension-image";
 
 export default [
     Document,
@@ -45,4 +46,5 @@ export default [
     TableRow,
     TableCell,
     TextAlign,
+    Image,
 ];

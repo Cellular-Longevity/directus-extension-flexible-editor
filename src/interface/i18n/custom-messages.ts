@@ -1,6 +1,8 @@
 // NOTE: Translation strings that start with `$t:` are available in directus itself
 // TODO: [Stage 2][i18n] Improve implementation. Add interface option for translation strings, with defaults as placeholder? Or use own messages (scope) and do not use directus internal messages?
 
+import image from "../tools/image";
+
 export default {
     // NOTE: [extension-description] Sync description with GitHub, README.md and package.json
     extension_description:
@@ -48,6 +50,7 @@ export default {
         redo: "$t:wysiwyg_options.redo",
         table: "$t:wysiwyg_options.table",
         fullscreen: "$t:wysiwyg_options.fullscreen",
+        image: "$t:wysiwyg_options.image",
     },
     table: {
         insert: "Insert table",
