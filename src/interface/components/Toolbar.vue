@@ -1,11 +1,9 @@
 <template>
-    <div class="toolbar">
-        <relation-block-menu
-            v-if="m2aField"
-            :editor="editor"
-            :single-line-mode="singleLineMode"
-        />
-
+    <component
+        :is="mode == 'floating' ? FloatingMenu : 'div'"
+        class="toolbar" :class="mode"
+        v-bind="mode == 'floating' ? floatingMenuProps : null"
+    >
         <v-menu
             v-if="formatTools.length"
             show-arrow
@@ -64,35 +62,25 @@
             :icon="tool.icon"
             :display="tool.display"
             :shortcut="tool.shortcut"
-            :action="() => toolAction(tool)"
-            :active="tool.active?.(editor)"
+            :action="() => tool.action?.(editor)"
+            :active="editor.isFocused && tool.active?.(editor)"
             :disabled="tool.disabled?.(editor) || (singleLineMode && tool.disabledInSingleLineMode)"
             :editor="editor"
         />
-
-        <v-dialog v-model="showDialog">
-            <component
-                :is="dialog!.component"
-                :get="dialog!.get"
-                @set="dialog!.set"
-                @unset="dialog!.unset"
-                @close-dialog="dialog = null"
-            ></component>
-        </v-dialog>
-    </div>
+    </component>
 </template>
 
 
 
 <script setup lang="ts">
-    import { ref, computed, inject } from 'vue';
+    import { ref, computed } from 'vue';
+    import { FloatingMenu, type Editor } from '@tiptap/vue-3';
     import ToolButton from './ToolButton.vue';
-    import RelationBlockMenu from './RelationBlockMenu.vue';
     import { translateShortcut } from '../directus-core/utils/translate-shortcut';
     import { useI18n } from "vue-i18n";
     import { useI18nFallback } from '../composables/use-i18n-fallback'
-    import type { Tool, Dialog } from '../types';
-    import type { Editor } from '@tiptap/vue-3';
+    import type { FloatingMenuPluginProps } from '@tiptap/extension-floating-menu';
+    import type { Tool, ToolbarMode } from '../types';
 
 
     // Props
@@ -101,6 +89,7 @@
         editor: Editor;
         displayFormat: boolean;
         singleLineMode: boolean;
+        mode: ToolbarMode
     }
     const props = withDefaults(defineProps<Props>(), {
         displayFormat: false
@@ -109,10 +98,6 @@
 
     // I18n
     const { t, $t } = useI18nFallback(useI18n());
-
-
-    // Inject
-    const m2aField = inject('m2aField');
 
 
     // Split up tools to types
@@ -142,14 +127,36 @@
         return t('tools.paragraph');
     });
 
+    const { floatingMenuProps } = useFloatingMenu();
 
-    // Dialog
-    const dialog = ref<Dialog | null>(null);
-    const showDialog = computed(() => dialog.value !== null)
+    function useFloatingMenu() {
+        const padding = parseInt(getComputedStyle(document.body)?.getPropertyValue('--theme--popover--menu--border-radius')?.replace('px', ''), 10) ?? 6;
 
+        type FloatingMenuProps = {
+            editor: FloatingMenuPluginProps['editor'];
+            shouldShow: FloatingMenuPluginProps['shouldShow'];
+            tippyOptions: FloatingMenuPluginProps['tippyOptions'];
+        };
 
-    // Action (click) method
-    const toolAction = (tool: Tool) => tool.action?.(props.editor, { dialog });
+        const floatingMenuProps: FloatingMenuProps = {
+            editor: props.editor,
+            shouldShow: ({ editor }) => editor.isFocused,
+            tippyOptions: {
+                placement: 'top',
+                maxWidth: 'none',
+                zIndex: 500,
+                arrow: true,
+                popperOptions: {
+                    modifiers: [
+                        { name: 'arrow', options: { padding } },
+                        { name: 'preventOverflow', options: { boundary: props.editor.view.dom } },
+                    ],
+                },
+            },
+        };
+
+        return { floatingMenuProps };
+    }
 </script>
 
 
@@ -167,6 +174,11 @@
 
         --toolbar-item-m: 1px;
         --toolbar-dropdown-p: 2px;
+
+        display: flex;
+        flex-wrap: wrap;
+        padding: var(--toolbar-item-m);
+        background: var(--theme--form--field--input--background-subdued);
     }
 
     .toolbar-dropdown-button :deep(.button) {
@@ -179,14 +191,77 @@
         --v-list-item-background-color-active: var(--theme--border-color, var(--border-normal));
     }
 
-    .toolbar {
-        border-bottom: var(--theme--border-width, var(--border-width)) solid var(--theme--border-color, var(--border-normal));
-        padding: var(--toolbar-item-m);
+    .toolbar :deep(> *:not(.v-dialog)) {
+        display: block;
+        margin: var(--toolbar-item-m);
     }
 
-    .toolbar :deep(> *) {
-        display: inline-flex;
-        margin: var(--toolbar-item-m);
-        vertical-align: middle;
+    .toolbar.sticky {
+        position: sticky;
+        top: calc(var(--header-bar-height) - 1px + var(--theme--header--border-width));
+        z-index: 1;
+    }
+
+    .toolbar.floating {
+        padding: 0 4px;
+        border: none;
+        border-radius: var(--theme--popover--menu--border-radius);
+        box-shadow: var(--theme--popover--menu--box-shadow);
+        padding: 1px 4px;
+    }
+</style>
+
+
+
+<style>
+    .flexible-editor-wrapper .tippy-arrow,
+    .flexible-editor-wrapper .tippy-arrow::after {
+        position: absolute;
+        z-index: 1;
+        width: 10px;
+        height: 10px;
+        overflow: hidden;
+        border-radius: 2px;
+    }
+    .flexible-editor-wrapper .tippy-arrow {
+        height: 7px;
+    }
+    .flexible-editor-wrapper .tippy-arrow::after {
+        height: 10px;
+    }
+
+	.flexible-editor-wrapper .tippy-arrow::after {
+		background: var(--theme--popover--menu--background);
+		transform: rotate(45deg) scale(1);
+		transition-delay: 0;
+		content: '';
+	}
+
+    .flexible-editor-wrapper [data-placement^='top'] .tippy-arrow {
+        bottom: -6px;
+    }
+    .flexible-editor-wrapper [data-placement^='top'] .tippy-arrow::after {
+        bottom: 3px;
+    }
+
+    .flexible-editor-wrapper [data-placement^='bottom'] .tippy-arrow {
+        top: -6px;
+    }
+    .flexible-editor-wrapper [data-placement^='bottom'] .tippy-arrow::after {
+        top: 3px;
+    }
+
+    .flexible-editor-wrapper [data-placement^='right'] .tippy-arrow {
+        left: -6px;
+    }
+    .flexible-editor-wrapper [data-placement^='right'] .tippy-arrow::after {
+        left: 4px;
+    }
+
+    .flexible-editor-wrapper [data-placement^='left'] .tippy-arrow {
+        right: -6px;
+    }
+    .flexible-editor-wrapper [data-placement^='left'] .tippy-arrow::after {
+        right: 4px;
     }
 </style>

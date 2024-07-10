@@ -1,11 +1,11 @@
 // https://tiptap.dev/api/nodes/image
 
 import Image from "@tiptap/extension-image";
+import { defineTool } from "../lib";
 import customMessages from "../i18n/custom-messages";
 import type { Editor } from "@tiptap/core";
-import type { Tool } from "../types";
 
-export default {
+export default defineTool({
     key: "image",
     name: customMessages.tools.image,
     icon: "image",
@@ -21,7 +21,7 @@ export default {
     disabled: (editor: Editor) =>
         !editor.can().chain().focus().setImage({ src: "" }).run(),
     active: (editor: Editor) => editor.isActive("image"),
-} as Tool;
+});
 
 function imageExtenstionConfig() {
     return Image.configure({
