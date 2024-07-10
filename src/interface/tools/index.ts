@@ -19,6 +19,8 @@ import blockquote from "./blockquote";
 import table from "./table";
 import fullscreen from "./fullscreen";
 import image from "./image";
+import subscript from "./subscript";
+import superscript from "./superscript";
 import type { AnyExtension } from "@tiptap/core";
 import type { Tool, ToolSelection, InterfaceOption } from "../types";
 
@@ -35,6 +37,8 @@ const tools: Tool[] = [
     bold,
     italic,
     strike,
+    subscript,
+    superscript,
     code,
     link.add,
     link.remove,
