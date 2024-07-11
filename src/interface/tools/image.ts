@@ -12,9 +12,13 @@ export default defineTool({
     extension: [imageExtenstionConfig],
     action: (editor: Editor) =>
     {
-        const url = window.prompt('URL')
+        // Allow specifying just the ID from the file library.
+        const urlOrId = window.prompt('URL or image ID')
 
-        if (url) {
+        if (urlOrId) {
+          const url = urlOrId.startsWith("http://") || urlOrId.startsWith("https://")
+              ? urlOrId
+              : `/assets/${urlOrId}`
           editor.chain().focus().setImage({ src: url }).run()
         }        
     },
