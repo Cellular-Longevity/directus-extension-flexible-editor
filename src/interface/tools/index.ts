@@ -17,12 +17,13 @@ import bulletList from "./bullet-list";
 import orderedList from "./ordered-list";
 import blockquote from "./blockquote";
 import table from "./table";
-import fullscreen from "./fullscreen";
 import image from "./image";
 import subscript from "./subscript";
 import superscript from "./superscript";
+import fontSize from "./font-size"
 import type { AnyExtension } from "@tiptap/core";
 import type { Tool, ToolSelection, InterfaceOption } from "../types";
+import { DEFAULT_FONT_SIZES } from "../../tiptap-extensions/utils/font-size";
 
 const tools: Tool[] = [
     relationBlock,
@@ -39,6 +40,7 @@ const tools: Tool[] = [
     strike,
     subscript,
     superscript,
+    ...DEFAULT_FONT_SIZES.map((size) => fontSize(size)),
     code,
     link.add,
     link.remove,
@@ -53,7 +55,8 @@ const tools: Tool[] = [
     table,
     history.undo,
     history.redo,
-    fullscreen,
+    // Fullscreen icon forces a second row and probably isn't worth it.
+    // fullscreen,
 ];
 
 export const selectedTools = (
