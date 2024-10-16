@@ -54,6 +54,57 @@
             </v-list>
         </v-menu>
 
+        <!-- This font size menu duplicates the format menu above; may want a better abstraction if we add any more. -->
+        <v-menu
+            v-if="fontSizeTools.length"
+            show-arrow
+            placement="bottom-start"
+            :fullHeight="true"
+        >
+            <template #activator="{ toggle }">
+                <v-button
+                    v-if="displayFormat"
+                    @click="toggle"
+                    tabindex="-1"
+                    v-tooltip="'Font size'"
+                    :aria-label="'Font size'"
+                    :disabled="fontSizeToolsDisabled"
+                    :aria-disabled="fontSizeToolsDisabled"
+                    small
+                    class="toolbar-dropdown-button"
+                >
+                    {{ fontSizeToolsDisplay }}
+                    <v-icon name="arrow_drop_down" />
+                </v-button>
+                <ToolButton
+                    v-else
+                    :title="'font_size'"
+                    icon="text_increase"
+                    :action="toggle"
+                    :disabled="fontSizeToolsDisabled"
+                />
+            </template>
+            <v-list class="toolbar-dropdown">
+                <v-list-item
+                    v-for="tool in fontSizeTools"
+                    :key="tool.key"
+                    clickable
+                    @click="tool.action?.(editor)"
+                    :active="tool.active?.(editor)"
+                    :aria-pressed="tool.active?.(editor)"
+                    :disabled="tool.disabled?.(editor) || (singleLineMode && tool.disabledInSingleLineMode)"
+                >
+                    <v-list-item-icon v-if="tool.icon">
+                        <v-icon :name="tool.icon" />
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-text-overflow :text="tool.name" />
+                    </v-list-item-content>
+                    <v-list-item-hint>{{ translateShortcut(tool.shortcut as string[]) }}</v-list-item-hint>
+                </v-list-item>
+            </v-list>
+        </v-menu>
+
         <component
             v-for="tool in buttonTools"
             :key="tool.key"
@@ -103,6 +154,7 @@
     // Split up tools to types
     const buttonTools = ref<Tool[]>([]);
     const formatTools = ref<Tool[]>([]);
+    const fontSizeTools = ref<Tool[]>([]);
     props.tools.forEach((tool) => {
         if (tool.excludeFromToolbar) {
             return;
@@ -112,6 +164,10 @@
 
         if (tool.groups && tool.groups.indexOf('format') >= 0) {
             formatTools.value.push(tool);
+            return;
+        }
+        if (tool.groups && tool.groups.indexOf('fontSize') >= 0) {
+            fontSizeTools.value.push(tool);
             return;
         }
 
@@ -125,6 +181,16 @@
             return activeFormat.map(tool => tool.name)[0];
 
         return t('tools.paragraph');
+    });
+
+    const fontSizeToolsDisabled = computed(() => fontSizeTools.value.every((tool) => tool.disabled?.(props.editor)));
+    const fontSizeToolsDisplay = computed(() => {
+        const activeFormat: Tool[] = fontSizeTools.value.filter((tool: Tool) => tool.active?.(props.editor));
+
+        if (activeFormat.length)
+            return activeFormat.map(tool => tool.name)[0];
+
+        return 'Font size';
     });
 
     const { floatingMenuProps } = useFloatingMenu();
