@@ -606,6 +606,7 @@
 </style>
 
 <style>
+
     /* not scoped */
     .prosemirror-dropcursor-block {
         background-color: var(
