@@ -1,21 +1,20 @@
 import { defineTool } from "../../lib";
-import customMessages from "../../i18n/custom-messages";
-import ToolButton from "./ToolButton.vue";
 import type { Editor } from "@tiptap/core";
 import type { RelationNodeAttrs } from "../../types";
 
 export default defineTool({
     // Custom
-    key: "relation-block",
-    name: customMessages.tools.relation_block,
-    icon: "add",
+    key: "relation-inline-block",
+    // name won’t be used
+    name: "relation-inline-block",
     excludeFromOptions: true,
     // Already imported
     extension: [],
-    toolbarButton: ToolButton,
+    // Rendered through relation-block
+    excludeFromToolbar: true,
     action: (editor: Editor, attrs: RelationNodeAttrs) => {
         focusAfterSelectionIfNotEmpty();
-        editor.chain().focus().setRelationBlock(attrs).run();
+        editor.chain().focus().setRelationInlineBlock(attrs).run();
         focusAfterSelectionIfNotEmpty();
 
         function focusAfterSelectionIfNotEmpty() {
@@ -27,6 +26,5 @@ export default defineTool({
     },
     disabled: (editor: Editor) =>
         !editor.can().chain().focus().setRelationBlock().run(),
-    disabledInSingleLineMode: true,
-    active: (editor: Editor) => editor.isActive("relation-block"),
+    active: (editor: Editor) => editor.isActive("relation-inline-block"),
 });

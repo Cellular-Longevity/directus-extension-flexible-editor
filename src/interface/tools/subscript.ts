@@ -8,12 +8,12 @@ import type { Editor } from "@tiptap/core";
 export default defineTool({
     key: "subscript",
     name: customMessages.tools.subscript,
-    // "icon" is the icon name from https://fonts.google.com/icons
     icon: "subscript",
     extension: [Subscript],
-    // shortcut: ["meta", "I"],
+    shortcut: ["meta", ","],
     action: (editor: Editor) =>
         extendMarkRangeIfUnselected(editor, "subscript").toggleSubscript().run(),
-    disabled: (editor) => !editor.can().chain().focus().toggleSubscript().run(),
+    disabled: (editor: Editor) =>
+        !editor.can().chain().focus().toggleSubscript().run(),
     active: (editor: Editor) => editor.isActive("subscript"),
 });

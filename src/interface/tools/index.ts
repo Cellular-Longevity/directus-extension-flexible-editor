@@ -3,13 +3,17 @@
 import heading from "./heading";
 import history from "./history";
 import relationBlock from "./relation-block";
+import relationInlineBlock from "./relation-inline-block";
 import paragraph from "./paragraph";
 import codeBlock from "./code-block";
 import bold from "./bold";
 import italic from "./italic";
 import strike from "./strike";
 import code from "./code";
+import subscript from "./subscript";
+import superscript from "./superscript";
 import link from "./link";
+import relationMark from "./relation-mark";
 import hardBreak from "./hard-break";
 import horizontalRule from "./horizontal-rule";
 import textAlign from "./text-align";
@@ -18,8 +22,6 @@ import orderedList from "./ordered-list";
 import blockquote from "./blockquote";
 import table from "./table";
 import image from "./image";
-import subscript from "./subscript";
-import superscript from "./superscript";
 import fontSize from "./font-size"
 import type { AnyExtension } from "@tiptap/core";
 import type { Tool, ToolSelection, InterfaceOption } from "../types";
@@ -27,6 +29,7 @@ import { DEFAULT_FONT_SIZES } from "../../tiptap-extensions/utils/font-size";
 
 const tools: Tool[] = [
     relationBlock,
+    relationInlineBlock,
     paragraph,
     codeBlock,
     heading(1),
@@ -38,14 +41,15 @@ const tools: Tool[] = [
     bold,
     italic,
     strike,
-    subscript,
-    superscript,
     ...DEFAULT_FONT_SIZES.map((size) => fontSize(size)),
     code,
+    subscript,
+    superscript,
     link.add,
     link.remove,
     link.auto,
     image,
+    relationMark,
     hardBreak,
     horizontalRule,
     textAlign,
@@ -61,12 +65,17 @@ const tools: Tool[] = [
 
 export const selectedTools = (
     selection: ToolSelection,
-    includeRelationBlock = false
+    includeRelationNodes = false
 ) =>
     tools.filter(
         ({ key }) =>
             selection.indexOf(key) >= 0 ||
-            (includeRelationBlock && key == "relation-block")
+            (includeRelationNodes &&
+                [
+                    "relation-block",
+                    "relation-inline-block",
+                    "relation-mark",
+                ].indexOf(key) >= 0)
     );
 
 export const toolsExtensions = (selection: ToolSelection): AnyExtension[] => {
@@ -98,8 +107,4 @@ export const interfaceOptions: InterfaceOption[] = optionalTools.map(
 
 export const interfaceOptionsDefault: string[] = optionalTools.map(
     ({ key }) => key
-);
-
-export const relationBlockTool: Tool | undefined = tools.find(
-    ({ key }) => key === "relation-block"
 );
