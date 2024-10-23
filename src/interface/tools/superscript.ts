@@ -7,13 +7,13 @@ import type { Editor } from "@tiptap/core";
 
 export default defineTool({
     key: "superscript",
-    name: customMessages.tools.subscript,
-    // "icon" is the icon name from https://fonts.google.com/icons
+    name: customMessages.tools.superscript,
     icon: "superscript",
     extension: [Superscript],
-    // shortcut: ["meta", "I"],
+    shortcut: ["meta", "."],
     action: (editor: Editor) =>
         extendMarkRangeIfUnselected(editor, "superscript").toggleSuperscript().run(),
-    disabled: (editor) => !editor.can().chain().focus().toggleSuperscript().run(),
+    disabled: (editor: Editor) =>
+        !editor.can().chain().focus().toggleSuperscript().run(),
     active: (editor: Editor) => editor.isActive("superscript"),
 });

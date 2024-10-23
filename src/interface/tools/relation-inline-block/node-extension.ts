@@ -5,17 +5,19 @@ import type { RelationNodeAttrs } from "../../types";
 
 declare module "@tiptap/core" {
     interface Commands<ReturnType> {
-        "relation-block": {
-            setRelationBlock: (attrs?: RelationNodeAttrs) => ReturnType;
+        "relation-inline-block": {
+            setRelationInlineBlock: (attrs?: RelationNodeAttrs) => ReturnType;
         };
     }
 }
 
-const tag = "relation-block";
+const tag = "relation-inline-block";
 
 export default Node.create({
     name: tag,
-    group: "block",
+    // `singleline` is a custom group for the Single Line Mode of Flexible Editor
+    group: "inline singleline",
+    inline: true,
     draggable: true,
     selectable: true,
     // Does not have any content
@@ -48,7 +50,7 @@ export default Node.create({
 
     addCommands() {
         return {
-            setRelationBlock:
+            setRelationInlineBlock:
                 (
                     attrs = {
                         id: null,
