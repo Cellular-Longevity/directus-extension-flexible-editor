@@ -21,8 +21,11 @@ import bulletList from "./bullet-list";
 import orderedList from "./ordered-list";
 import blockquote from "./blockquote";
 import table from "./table";
+import fullscreen from "./fullscreen";
 import image from "./image";
 import fontSize from "./font-size";
+import details from "./details";
+import summary from "./summary";
 import type { AnyExtension } from "@tiptap/core";
 import type { Tool, ToolSelection, InterfaceOption } from "../types";
 import { DEFAULT_FONT_SIZES } from "../../tiptap-extensions/utils/font-size";
@@ -57,10 +60,11 @@ const tools: Tool[] = [
     orderedList,
     blockquote,
     table,
+    details,
+    summary,
     history.undo,
     history.redo,
-    // Fullscreen icon forces a second row and probably isn't worth it.
-    // fullscreen,
+    fullscreen,
 ];
 
 export const selectedTools = (

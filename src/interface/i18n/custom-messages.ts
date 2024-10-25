@@ -59,6 +59,9 @@ export default {
         table: "$t:wysiwyg_options.table",
         fullscreen: "$t:wysiwyg_options.fullscreen",
         image: "$t:wysiwyg_options.image",
+        font_size: "Font size",
+        details: "Expandable details",
+        summary: "Summary",
     },
     toolbar_mode: {
         title: "$t:interfaces.input-rich-text-html.toolbar",
