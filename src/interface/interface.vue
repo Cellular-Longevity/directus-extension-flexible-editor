@@ -426,6 +426,35 @@
         line-height: 1em;
     }
 
+    /*
+    Editor styles for expandable content. The background and border colors are chosen
+    to look reasonable in both light and dark modes. (The "prefers-color-scheme: dark"
+    media query doesn't work). 
+    */
+    .flexible-editor :deep(flexible-editor-details) {
+      display: block;
+      padding: 12px;
+      border: 1px solid rgb(0, 153, 255);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .flexible-editor :deep(flexible-editor-summary) {
+      display: block;
+      position: relative;
+      padding: 12px;
+      background: rgb(0, 153, 255);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .flexible-editor :deep(flexible-editor-summary)::before {
+      /* Show "expand" icon on the right edge of the summary. */
+      content: "▼";
+      position: absolute;
+      right: 12px;
+    }
+
     .flexible-editor :deep(pre) {
         background-color: var(--theme--background-normal, var(--background-normal));
         padding: var(--theme--form--field--input--padding, var(--input-padding));
